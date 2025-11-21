@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+
+{% block title %}워게임 | HSpace{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/wargame.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="wargame-hero">
+    <div class="hero-copy">
+        <p class="eyebrow">실시간 워게임</p>
+        <h1>지금 바로 우주 보안 임무에 투입되세요.</h1>
+        <p>
+            기초부터 고급까지 모든 난이도의 문제를 풀고, 직접 만든 문제를 커뮤니티에 공유할 수 있습니다.
+            상시 오픈된 시즌 보드에서 실력을 증명해보세요.
+        </p>
+        <div class="hero-actions">
+            <a href="#challenge-grid" class="primary">문제 풀기</a>
+            <a href="#create-section" class="ghost">문제 업로드</a>
+        </div>
+    </div>
+    <div class="hero-featured">
+        {% if featured %}
+        <h3>Featured Challenge</h3>
+        <p class="difficulty-tag">{{ featured.difficulty }}</p>
+        <h2>{{ featured.title }}</h2>
+        <p>{{ featured.summary }}</p>
+        <div class="meta">
+            <span>#{{ featured.category }}</span>
+            <span>{{ featured.solved_count }} solved</span>
+        </div>
+        {% else %}
+        <h2>곧 공개됩니다.</h2>
+        <p>첫 문제를 만들어 주인공이 되어보세요.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="wargame-stats">
+    <article>
+        <span class="label">등록된 문제</span>
+        <strong>{{ stats.total_challenges }}</strong>
+    </article>
+    <article>
+        <span class="label">커뮤니티 문제</span>
+        <strong>{{ stats.community_count }}</strong>
+    </article>
+    <article>
+        <span class="label">정답 제출</span>
+        <strong>{{ stats.solved_total }}</strong>
+    </article>
+</section>
+
+<section class="wargame-body">
+    <div class="wargame-main">
+        <header class="section-header">
+            <div>
+                <p class="eyebrow">Live Challenges</p>
+                <h2>실시간 워게임 문제들</h2>
+            </div>
+            <p>FLAG 형식은 기본적으로 <code>FLAG&#123;...&#125;</code> 입니다.</p>
+        </header>
+
+        <form class="challenge-filters" method="get" action="{{ url_for('wargame.dashboard') }}">
+            <label>
+                <span>검색</span>
+                <input type="text" name="search" placeholder="제목 또는 설명" value="{{ filters.search }}">
+            </label>
+            <label>
+                <span>난이도</span>
+                <select name="difficulty">
+                    <option value="all" {% if filters.difficulty == 'all' %}selected{% endif %}>전체</option>
+                    <option value="초급" {% if filters.difficulty == '초급' %}selected{% endif %}>초급</option>
+                    <option value="중급" {% if filters.difficulty == '중급' %}selected{% endif %}>중급</option>
+                    <option value="고급" {% if filters.difficulty == '고급' %}selected{% endif %}>고급</option>
+                </select>
+            </label>
+            <label>
+                <span>카테고리</span>
+                <select name="category">
+                    <option value="all" {% if filters.category == 'all' %}selected{% endif %}>전체</option>
+                    {% for category in categories %}
+                    <option value="{{ category }}" {% if filters.category == category %}selected{% endif %}>{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                <span>정렬</span>
+                <select name="sort">
+                    <option value="newest" {% if filters.sort == 'newest' %}selected{% endif %}>최신순</option>
+                    <option value="popular" {% if filters.sort == 'popular' %}selected{% endif %}>인기순</option>
+                    <option value="reward" {% if filters.sort == 'reward' %}selected{% endif %}>포인트순</option>
+                    <option value="oldest" {% if filters.sort == 'oldest' %}selected{% endif %}>오래된순</option>
+                </select>
+            </label>
+            <div class="filter-actions">
+                <button type="submit">필터 적용</button>
+                {% if filters.difficulty != 'all' or filters.category != 'all' or filters.search or filters.sort != 'newest' %}
+                <a class="reset" href="{{ url_for('wargame.dashboard') }}">초기화</a>
+                {% endif %}
+            </div>
+        </form>
+
+        <div class="challenge-grid" id="challenge-grid">
+            {% for challenge in challenges %}
+            <article class="challenge-card diff-{{ challenge.difficulty }}">
+                <header>
+                    <span class="difficulty">{{ challenge.difficulty }}</span>
+                    <h3>{{ challenge.title }}</h3>
+                    <p>{{ challenge.summary }}</p>
+                </header>
+                <div class="challenge-meta">
+                    <span>#{{ challenge.category }}</span>
+                    <span>{{ challenge.solved_count }} solved</span>
+                    {% if challenge.is_community %}
+                    <span>by {{ challenge.author_name }}</span>
+                    {% endif %}
+                </div>
+                {% if challenge.attachment_path %}
+                <a class="download-badge" href="{{ url_for('static', filename=challenge.attachment_path) }}" download>
+                    자료 다운로드
+                </a>
+                {% endif %}
+                {% if challenge.hint %}
+                <p class="hint">💡 Hint: {{ challenge.hint }}</p>
+                {% endif %}
+                <form method="post" action="{{ url_for('wargame.attempt_challenge') }}" class="flag-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="challenge_id" value="{{ challenge.id }}">
+                    <input type="text" name="flag" placeholder="FLAG{...}" required>
+                    <button type="submit">제출</button>
+                </form>
+                {% if not g.user %}
+                <p class="login-hint">로그인 후 제출하면 기록에 반영됩니다.</p>
+                {% endif %}
+            </article>
+            {% else %}
+            <p class="empty-state">등록된 문제가 없습니다. 직접 만들어보세요!</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <aside class="wargame-sidebar">
+        {% if user_stats %}
+        <section class="card">
+            <h3>내 진행상황</h3>
+            <ul class="progress-metrics">
+                <li>
+                    <span>총 제출</span>
+                    <strong>{{ user_stats.total_attempts }}</strong>
+                </li>
+                <li>
+                    <span>해결</span>
+                    <strong>{{ user_stats.total_solves }}</strong>
+                </li>
+                <li>
+                    <span>정답률</span>
+                    <strong>{{ user_stats.accuracy }}%</strong>
+                </li>
+                <li>
+                    <span>누적 포인트</span>
+                    <strong>{{ user_stats.reward_points }}</strong>
+                </li>
+                <li>
+                    <span>즐겨찾는 카테고리</span>
+                    <strong>{{ user_stats.favorite_category or '데이터 없음' }}</strong>
+                </li>
+            </ul>
+        </section>
+        {% endif %}
+
+        <section class="card">
+            <h3>TOP Solver</h3>
+            <ul class="leaderboard">
+                {% for row in leaderboard %}
+                <li>
+                    <span>#{{ loop.index }}</span>
+                    <span>{{ row.username }}</span>
+                    <span>{{ row.solved }} solved</span>
+                </li>
+                {% else %}
+                <li class="empty-state">아직 랭킹 데이터가 없습니다.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section class="card">
+            <h3>최근 커뮤니티 문제</h3>
+            <ul class="recent">
+                {% for item in recent_creations %}
+                <li>
+                    <strong>{{ item.title }}</strong>
+                    <span>{{ item.author_name }}</span>
+                </li>
+                {% else %}
+                <li class="empty-state">커뮤니티 문제를 첫 등록해보세요.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        {% if user_stats %}
+        <section class="card">
+            <h3>최근 제출 기록</h3>
+            <ul class="attempt-log">
+                {% for attempt in recent_attempts %}
+                <li class="{% if attempt.is_correct %}correct{% else %}wrong{% endif %}">
+                    <div class="attempt-head">
+                        <strong>{{ attempt.challenge }}</strong>
+                        <span class="difficulty">{{ attempt.difficulty }}</span>
+                    </div>
+                    <div class="attempt-body">
+                        <span class="status">{% if attempt.is_correct %}정답{% else %}오답{% endif %}</span>
+                        {% set attempt_time = attempt.created_at %}
+                        <time datetime="{{ attempt_time.isoformat() if attempt_time else '' }}">
+                            {% if attempt_time %}{{ attempt_time.strftime('%m/%d %H:%M') }}{% else %}-{% endif %}
+                        </time>
+                    </div>
+                    <p class="attempt-flag">{{ attempt.submitted_flag }}</p>
+                </li>
+                {% else %}
+                <li class="empty-state">제출 기록이 없습니다.</li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+    </aside>
+</section>
+
+<section class="create-section" id="create-section">
+    <header>
+        <p class="eyebrow">Community Workshop</p>
+        <h2>나만의 워게임 문제를 업로드하세요</h2>
+        <p>내부 검수 후 전체 플레이어에게 공개됩니다.</p>
+    </header>
+    <form method="post" action="{{ url_for('wargame.publish_challenge') }}" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-row">
+            <label>
+                제목
+                <input type="text" name="title" placeholder="예: Quantum Vault" required>
+            </label>
+            <label>
+                난이도
+                <select name="difficulty">
+                    <option value="초급">초급</option>
+                    <option value="중급" selected>중급</option>
+                    <option value="고급">고급</option>
+                </select>
+            </label>
+            <label>
+                카테고리
+                <input type="text" name="category" placeholder="Web / Crypto / Pwn">
+            </label>
+        </div>
+        <label>
+            문제 설명
+            <textarea name="summary" rows="3" placeholder="시나리오와 요구사항을 정의해주세요." required></textarea>
+        </label>
+        <div class="form-row">
+            <label>
+                FLAG 값
+                <input type="text" name="flag" placeholder="FLAG{...}" required>
+            </label>
+            <label>
+                힌트 (선택)
+                <input type="text" name="hint" placeholder="짧은 힌트">
+            </label>
+        </div>
+        <label class="file-upload">
+            참고 자료 (선택)
+            <input type="file" name="attachment" accept=".zip,.tar,.gz,.tgz,.bz2,.7z,.txt,.pdf,.md">
+        </label>
+        <p class="upload-note">압축/문서 파일만 허용되며 최대 8MB 까지 업로드할 수 있습니다.</p>
+        <button class="primary" type="submit">문제 제출</button>
+        {% if not g.user %}
+        <p class="login-hint">로그인 후 제출하면 검수가 진행됩니다.</p>
+        {% endif %}
+    </form>
+</section>
+{% endblock %}
