@@ -1,4 +1,4 @@
-﻿# Python artifacts
+# Python artifacts
 __pycache__/
 *.py[cod]
 *.pyo
@@ -23,3 +23,5 @@ Thumbs.db
 
 # Uploads
 static/uploads/
+static/wargame_attachments/*
+!static/wargame_attachments/.gitkeep
