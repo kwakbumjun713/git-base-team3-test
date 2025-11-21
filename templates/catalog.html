@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block title %}대회 카탈로그{% endblock %}
+
+{% block head %}
+<style>
+    .catalog-hero {
+        margin: 30px 0 10px;
+        padding: 30px;
+        border-radius: 24px;
+        background: rgba(12, 14, 35, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+    }
+    .catalog-hero h1 {
+        margin: 0 0 12px;
+        font-size: clamp(32px, 3.5vw, 46px);
+    }
+    .catalog-hero p {
+        margin: 0;
+        color: #9ca2cf;
+        line-height: 1.7;
+    }
+    .catalog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 22px;
+        margin: 40px 0 80px;
+    }
+    .catalog-card {
+        background: rgba(8, 10, 30, 0.88);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 22px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+    }
+    .catalog-card h3 {
+        margin: 0;
+        font-size: 20px;
+    }
+    .catalog-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 13px;
+        color: #a5acd8;
+    }
+    .catalog-meta span {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .catalog-desc {
+        color: rgba(255, 255, 255, 0.78);
+        line-height: 1.6;
+        min-height: 70px;
+        font-size: 14px;
+    }
+    .catalog-links {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .catalog-links a {
+        padding: 8px 16px;
+        border-radius: 12px;
+        background: linear-gradient(120deg, rgba(125, 98, 255, 0.4), rgba(75, 212, 255, 0.2));
+        border: 1px solid rgba(125, 98, 255, 0.6);
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    .catalog-links a.secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+    .catalog-random {
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding-top: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .catalog-random form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .catalog-random select {
+        flex: 1;
+        min-width: 140px;
+        border-radius: 12px;
+        padding: 8px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(8, 10, 30, 0.8);
+        color: white;
+    }
+    .catalog-random button {
+        padding: 8px 16px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(120deg, rgba(125, 98, 255, 0.7), rgba(75, 212, 255, 0.4));
+        cursor: pointer;
+        color: white;
+        font-weight: 600;
+    }
+    .match-results {
+        font-size: 13px;
+        color: #cdd1ff;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .match-result-card {
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 10px 12px;
+        background: rgba(14, 17, 38, 0.8);
+    }
+    .catalog-empty {
+        margin: 60px 0;
+        text-align: center;
+        color: #9ca2cf;
+        padding: 40px;
+        border-radius: 20px;
+        border: 1px dashed rgba(255, 255, 255, 0.15);
+        background: rgba(8, 10, 30, 0.6);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="catalog-hero">
+    <h1>대회 카탈로그</h1>
+    <p>
+        CTFtime API에서 실시간으로 가져온 전세계 CTF 일정입니다.
+        원하는 대회를 선택하고 팀을 구성하거나, 리서치 허브에서 모집글을 올려보세요.
+    </p>
+</section>
+
+{% if events %}
+    <div class="catalog-grid">
+        {% for event in events %}
+            <article class="catalog-card">
+                <div>
+                    <h3>{{ event.title }}</h3>
+                    <div style="color:#7dd0ff; font-size:13px; margin-top:4px;">
+                        {{ event.start_display }} ~ {{ event.finish_display }}
+                    </div>
+                </div>
+
+                <div class="catalog-meta">
+                    {% if event.format %}
+                        <span>{{ event.format }}</span>
+                    {% endif %}
+                    <span>{{ '온라인' if not event.onsite else '온사이트' }}</span>
+                    {% if event.location %}
+                        <span>{{ event.location }}</span>
+                    {% endif %}
+                    {% if event.weight %}
+                        <span>Weight {{ event.weight }}</span>
+                    {% endif %}
+                </div>
+
+                <p class="catalog-desc">
+                    {{ event.description or "설명이 제공되지 않은 대회입니다." }}
+                </p>
+
+                <div class="catalog-links">
+                    {% if event.id %}
+                        <a href="{{ url_for('research.catalog_team', event_id=event.id) }}" class="secondary">팀 모집하기</a>
+                    {% endif %}
+                    {% if event.url %}
+                        <a href="{{ event.url }}" target="_blank" rel="noopener">공식 페이지</a>
+                    {% endif %}
+                    {% if event.ctftime_url %}
+                        <a href="{{ event.ctftime_url }}" target="_blank" rel="noopener">CTFtime 정보</a>
+                    {% endif %}
+                </div>
+
+                <div class="catalog-random">
+                    <div style="font-weight:600;">이 대회 팀 랜덤 추천</div>
+                    <form class="random-match-form" data-title="{{ event.title }}">
+                        <select name="level">
+                            <option value="">전체 레벨</option>
+                            {% for level in levels %}
+                                <option value="{{ level }}">{{ level }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">추천 받기</button>
+                    </form>
+                    <div class="match-results" data-state="empty">아직 추천 요청이 없습니다.</div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="catalog-empty">
+        현재 가져올 수 있는 대회 정보가 없습니다. 잠시 후 다시 시도해 주세요.
+    </div>
+{% endif %}
+
+<script>
+document.querySelectorAll('.random-match-form').forEach(form => {
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const card = form.closest('.catalog-card');
+        const resultBox = card.querySelector('.match-results');
+        const level = form.querySelector('select').value;
+        const competitionTitle = form.dataset.title;
+
+        resultBox.textContent = '추천 중...';
+
+        try {
+            const response = await fetch('{{ url_for("research.api_random_match") }}', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    competition_title: competitionTitle,
+                    level: level || null
+                })
+            });
+            const data = await response.json();
+            if (!data.matches || data.matches.length === 0) {
+                resultBox.textContent = '조건에 맞는 팀이 없습니다.';
+                return;
+            }
+            resultBox.innerHTML = data.matches.map(match => `
+                <div class="match-result-card">
+                    <strong>${match.title}</strong>
+                    <div style="color:#9ca2cf; margin:4px 0;">레벨: ${match.level || '정보 없음'} · ${match.team_size || '팀 규모 미입력'}</div>
+                    <div style="color:#cfd3ff;">${match.summary || '소개가 없습니다.'}</div>
+                </div>
+            `).join('');
+        } catch (err) {
+            console.error(err);
+            resultBox.textContent = '추천 중 오류가 발생했습니다.';
+        }
+    });
+});
+</script>
+{% endblock %}

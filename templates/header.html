@@ -1,0 +1,38 @@
+<header class="header">
+
+    <!-- ⭐ 로고 이미지 -->
+    <div class="logo">
+        <a href="{{ url_for('home.index') }}">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="HSpace Logo">
+        </a>
+    </div>
+
+    <!-- 메뉴 -->
+    <nav class="nav-menu">
+        <a href="{{ url_for('home.index') }}">홈</a>
+        <a class="disabled">워게임</a>
+        <a href="{{ url_for('research.research') }}">리서치</a>
+        <a class="disabled">미니게임</a>
+    </nav>
+
+    <!-- 로그인/로그아웃 -->
+    <div class="nav-auth">
+
+        {% if g.user %}
+        <div class="user-area">
+            <span class="user-icon">👤</span>
+            <span class="username">{{ g.user.username }}</span>
+
+            <form method="post" action="{{ url_for('auth.logout') }}" class="logout-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="logout-btn">로그아웃</button>
+            </form>
+        </div>
+
+        {% else %}
+            <a href="{{ url_for('auth.login') }}">로그인</a>
+            <a href="{{ url_for('auth.register') }}" class="highlight">회원가입</a>
+        {% endif %}
+
+    </div>
+</header>
