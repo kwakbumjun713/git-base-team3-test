@@ -1,0 +1,410 @@
+main.container {
+    max-width: 1200px;
+}
+
+.wargame-hero {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+    margin-bottom: 32px;
+    padding: 32px;
+    border-radius: 20px;
+    background: rgba(15, 19, 30, 0.85);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+}
+
+.wargame-hero .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.8rem;
+    color: #90c2ff;
+}
+
+.wargame-hero h1 {
+    margin: 12px 0;
+    font-size: 2rem;
+}
+
+.hero-actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+}
+
+.hero-actions .primary,
+.create-section button.primary {
+    background: linear-gradient(120deg, #4c8dff, #9145ff);
+    border: none;
+    padding: 12px 24px;
+    color: white;
+    border-radius: 999px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+}
+
+.hero-actions .ghost {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 999px;
+    padding: 12px 24px;
+    color: white;
+    text-decoration: none;
+}
+
+.hero-featured {
+    background: rgba(255, 255, 255, 0.04);
+    padding: 24px;
+    border-radius: 16px;
+}
+
+.wargame-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.wargame-stats article {
+    padding: 16px;
+    border-radius: 12px;
+    background: rgba(15, 19, 30, 0.8);
+    text-align: center;
+}
+
+.wargame-stats .label {
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.75rem;
+    color: #8a9bb8;
+}
+
+.wargame-stats strong {
+    display: block;
+    margin-top: 6px;
+    font-size: 1.8rem;
+    color: #f5f9ff;
+}
+
+.wargame-body {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(240px, 0.9fr);
+    gap: 24px;
+    margin-bottom: 48px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 20px;
+}
+
+.challenge-filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 16px;
+    background: rgba(10, 13, 22, 0.8);
+}
+
+.challenge-filters label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #9fb3d1;
+}
+
+.challenge-filters input,
+.challenge-filters select {
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 10px 12px;
+    color: white;
+}
+
+.challenge-filters .filter-actions {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.challenge-filters button {
+    border: none;
+    border-radius: 10px;
+    padding: 10px 16px;
+    background: #4c8dff;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.challenge-filters .reset {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    text-decoration: none;
+    color: #d4ddf5;
+    font-size: 0.85rem;
+}
+
+.challenge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.challenge-card {
+    background: rgba(10, 13, 22, 0.9);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.challenge-card .difficulty {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.challenge-card.diff-초급 {
+    border-color: rgba(144, 194, 255, 0.5);
+}
+.challenge-card.diff-중급 {
+    border-color: rgba(255, 194, 112, 0.4);
+}
+.challenge-card.diff-고급 {
+    border-color: rgba(255, 112, 112, 0.4);
+}
+
+.challenge-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 0.85rem;
+    color: #90a4c3;
+}
+
+.download-badge {
+    align-self: flex-start;
+    display: inline-flex;
+    margin-top: 4px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(76, 141, 255, 0.15);
+    color: #dbe7ff;
+    font-size: 0.8rem;
+    text-decoration: none;
+    border: 1px solid rgba(76, 141, 255, 0.3);
+}
+
+.download-badge:hover {
+    background: rgba(76, 141, 255, 0.3);
+}
+
+.hint {
+    font-size: 0.9rem;
+    color: #ffc978;
+}
+
+.flag-form {
+    display: flex;
+    gap: 8px;
+}
+
+.flag-form input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: white;
+}
+
+.flag-form button {
+    border: none;
+    background: #4c8dff;
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0 16px;
+}
+
+.flag-form button:disabled,
+.flag-form input:disabled,
+.create-section button:disabled,
+.create-section input:disabled,
+.create-section textarea:disabled,
+.create-section select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.login-hint {
+    font-size: 0.8rem;
+    color: #9fb3d1;
+}
+
+.wargame-sidebar .card {
+    background: rgba(10, 13, 22, 0.85);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.progress-metrics {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.progress-metrics li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #9fb3d1;
+}
+
+.progress-metrics strong {
+    color: #f5f9ff;
+}
+
+.leaderboard,
+.recent {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.leaderboard li,
+.recent li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.leaderboard li:last-child,
+.recent li:last-child {
+    border-bottom: none;
+}
+
+.attempt-log {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.attempt-log li {
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.attempt-log li.correct {
+    border-color: rgba(86, 201, 160, 0.5);
+}
+
+.attempt-log li.wrong {
+    border-color: rgba(255, 126, 126, 0.4);
+}
+
+.attempt-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.attempt-head .difficulty {
+    color: #90a4c3;
+}
+
+.attempt-body {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: #b4c2de;
+}
+
+.attempt-flag {
+    font-size: 0.8rem;
+    margin-top: 4px;
+    color: #8da2c6;
+    word-break: break-all;
+}
+
+.empty-state {
+    color: #8796b7;
+    font-size: 0.9rem;
+}
+
+.create-section {
+    background: rgba(10, 13, 22, 0.9);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+}
+
+.create-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.create-section input,
+.create-section textarea,
+.create-section select {
+    width: 100%;
+    margin-top: 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 10px 12px;
+    color: white;
+}
+
+.create-section textarea {
+    resize: vertical;
+}
+
+.file-upload input[type="file"] {
+    margin-top: 8px;
+    background: none;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    padding: 12px;
+    border-radius: 10px;
+    color: #f5f9ff;
+}
+
+.upload-note {
+    font-size: 0.8rem;
+    color: #9bb0d6;
+    margin: 0;
+}
+
+@media (max-width: 900px) {
+    .wargame-body {
+        grid-template-columns: 1fr;
+    }
+}
