@@ -22,6 +22,7 @@ def create_app():
     # 모델 import (순환참조 방지)
     from models.user import User
     from models.research import Competition, TeamApplication, TeamPost
+    from models.wargame import WargameAttempt, WargameChallenge
 
     # 로그인 사용자 로딩
     @app.before_request
@@ -50,10 +51,12 @@ def create_app():
     from routes.home import home_bp
     from routes.auth import auth_bp
     from routes.research import research_bp
+    from routes.wargame import wargame_bp
 
     app.register_blueprint(home_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(research_bp)
+    app.register_blueprint(wargame_bp)
 
     return app
 
