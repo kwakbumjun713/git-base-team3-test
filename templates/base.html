@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}HSpace{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- 🌌 우주 배경 -->
+    <div class="stars-background"></div>
+
+    <!-- ⭐ 헤더 -->
+    {% include "header.html" %}
+
+    <!-- 🔥 중앙 Flash 메시지 영역 -->
+    <div id="flash-wrapper">
+        {% with msgs = get_flashed_messages(with_categories=true) %}
+        {% if msgs %}
+            {% for category, message in msgs %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- 🔥 Flash 자동 제거 (3초 후 사라짐) -->
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll(".flash").forEach(el => {
+                el.style.transition = "opacity 0.7s";
+                el.style.opacity = "0";
+                setTimeout(() => el.remove(), 700);
+            });
+        }, 3000);
+    </script>
+
+</body>
+</html>

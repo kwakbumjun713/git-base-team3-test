@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}홈 - HSpace{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>HSpace<br></h1>
+    <p>
+        실전과 유사한 웹 공격 환경에서 <br>
+        로그인, 인증, 세션, 취약점 탐지 등 다양한 보안 테스트를 경험하세요.
+    </p>
+
+    {% if not g.user %}
+    <a href="{{ url_for('auth.login') }}" class="hero-btn">지금 시작하기</a>
+    {% endif %}
+</section>
+{% endblock %}
