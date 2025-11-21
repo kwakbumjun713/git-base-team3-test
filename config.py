@@ -1,14 +1,28 @@
 # config.py
 import os
 
+from dotenv import load_dotenv
+from urllib.parse import quote_plus
+
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
+
 
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY") or os.urandom(32)
 
+    DB_USER = os.environ.get("DB_USER", "huser")
+    DB_PASSWORD = os.environ.get("DB_PASSWORD", "hs1234!!")
+    DB_HOST = os.environ.get("DB_HOST", "localhost")
+    DB_PORT = os.environ.get("DB_PORT", "3306")
+    DB_NAME = os.environ.get("DB_NAME", "hspace")
+
+    _ENCODED_USER = quote_plus(DB_USER)
+    _ENCODED_PASSWORD = quote_plus(DB_PASSWORD)
+
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL",
-        "sqlite:///" + os.path.join(BASE_DIR, "secure.db"),
+        f"mysql+pymysql://{_ENCODED_USER}:{_ENCODED_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4",
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

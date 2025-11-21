@@ -6,3 +6,4 @@ WTForms
 PyMySQL
 cryptography
 requests
+python-dotenv

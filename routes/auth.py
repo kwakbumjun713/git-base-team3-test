@@ -67,9 +67,8 @@ def login():
 
         user = User.query.filter_by(username=username).first()
 
-        # 로그인 실패 → 오류 안내
+        # 로그인 실패 → flash 없음 (보안상 good)
         if not user or not user.check_password(password):
-            flash("아이디 또는 비밀번호가 올바르지 않습니다.", "error")
             return render_template("login.html", form=form)
 
         session.clear()
@@ -92,9 +91,8 @@ def register():
     if form.validate_on_submit():
         username = form.username.data.strip()
 
-        # 아이디 중복 시 안내
+        # 아이디 중복 시 flash 출력 안 함 (정보 노출 방지)
         if User.query.filter_by(username=username).first():
-            flash("이미 사용 중인 아이디입니다.", "error")
             return render_template("register.html", form=form)
 
         user = User(username=username)

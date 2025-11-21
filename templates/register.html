@@ -10,16 +10,6 @@
 
     <h2>회원가입</h2>
 
-    {% with errors = get_flashed_messages(with_categories=true) %}
-        {% if errors %}
-            {% for category, message in errors %}
-                {% if category == 'error' %}
-                    <div class="error">{{ message }}</div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
     <form method="post">
         {{ form.hidden_tag() }}
 
