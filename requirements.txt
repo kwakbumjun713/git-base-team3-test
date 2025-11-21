@@ -1,0 +1,9 @@
+Flask
+Flask-SQLAlchemy
+Flask-WTF
+Flask-Limiter
+WTForms
+PyMySQL
+cryptography
+requests
+python-dotenv

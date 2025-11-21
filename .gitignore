@@ -1,0 +1,25 @@
+﻿# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Environments
+env/
+venv/
+.venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Databases
+*.db
+
+# Uploads
+static/uploads/

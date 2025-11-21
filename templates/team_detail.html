@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} · 팀 페이지{% endblock %}
+
+{% block head %}
+<style>
+    .team-meta {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        font-size: 14px;
+        color: #a9afd6;
+    }
+
+    .team-card {
+        margin-top: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .inset-box {
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.02);
+        padding: 16px;
+    }
+
+    .inline-form {
+        margin-top: 16px;
+        display: grid;
+        gap: 12px;
+    }
+
+    .inline-form .grid-two {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .application-list {
+        margin-top: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .application-card {
+        padding: 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.02);
+    }
+    .application-card em {
+        color: #a9afd6;
+        font-style: normal;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="panel team-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+            <div style="color:#9ca2cf; font-size:14px;">{{ post.competition_title or '독립 프로젝트' }} · {{ post.phase }}</div>
+            <h1 style="margin:6px 0 0;">{{ post.title }}</h1>
+        </div>
+        <a href="{{ url_for('research.research') }}" class="submit-btn" style="width:auto; text-decoration:none; text-align:center;">← 모집 목록으로</a>
+    </div>
+    <p style="color:rgba(255,255,255,0.85); line-height:1.6;">{{ post.summary or '소개가 없습니다.' }}</p>
+    <div style="display:flex; gap:20px; flex-wrap:wrap; font-size:14px; color:#a9afd6;">
+        <span>팀장: {{ post.owner or '비공개' }}</span>
+        {% if post.team_size %}<span>팀 규모: {{ post.team_size }}</span>{% endif %}
+        {% if post.level %}<span>레벨: {{ post.level }}</span>{% endif %}
+        {% if post.use_random_matching %}<span>랜덤 매칭 허용</span>{% endif %}
+    </div>
+    <div style="display:flex; gap:20px; flex-wrap:wrap; font-size:14px; color:#a9afd6;">
+        <span>신청 기간: {{ post.apply_period }} ({{ post.apply_badge or '정보 없음' }})</span>
+        <span>대회 일정: {{ post.event_period }} ({{ post.event_badge or '정보 없음' }})</span>
+    </div>
+</section>
+
+<section class="panel" style="margin-top:20px;">
+    <h2>내 지원 현황</h2>
+    {% if my_application %}
+        <div class="inset-box">
+            <p style="margin:0 0 6px;">이름: {{ my_application.applicant_name }}</p>
+            <p style="margin:0 0 6px;">연락처: {{ my_application.contact or '미입력' }}</p>
+            <p style="margin:0 0 6px;">희망 역할: {{ my_application.desired_role or '미입력' }}</p>
+            <p style="margin:0;">메시지: {{ my_application.message or '없음' }}</p>
+        </div>
+    {% else %}
+        <p style="color:#9ca2cf;">아직 지원하지 않았습니다. 아래 양식을 작성하면 팀 리더에게 전달됩니다.</p>
+        <form method="POST" action="{{ url_for('research.research', phase=post.phase) }}" class="inline-form">
+            <input type="hidden" name="form_type" value="team_application">
+            <input type="hidden" name="post_id" value="{{ post.id }}">
+            <input type="hidden" name="next" value="{{ url_for('research.team_detail', post_id=post.id) }}">
+            <div class="grid-two">
+                <div>
+                    <label>이름 / 콜사인</label>
+                    <input type="text" name="applicant_name" required>
+                </div>
+                <div>
+                    <label>연락처 (디스코드, 이메일 등)</label>
+                    <input type="text" name="contact">
+                </div>
+            </div>
+            <div class="grid-two">
+                <div>
+                    <label>희망 포지션</label>
+                    <input type="text" name="desired_role">
+                </div>
+                <div>
+                    <label>레벨</label>
+                    <select name="level">
+                        <option value="">선택</option>
+                        {% for level in levels %}
+                            <option value="{{ level }}">{{ level }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <label>간단한 소개/각오</label>
+            <textarea name="message"></textarea>
+            <button type="submit" class="submit-btn">지원서 제출</button>
+        </form>
+    {% endif %}
+</section>
+
+<section class="panel" style="margin-top:20px;">
+    <h2>전체 지원자 ({{ applications|length }}명)</h2>
+    {% if applications %}
+        <div class="application-list">
+            {% for app in applications %}
+                <div class="application-card">
+                    <div style="display:flex; justify-content:space-between; font-size:14px;">
+                        <strong>{{ app.applicant_name }}</strong>
+                        <span style="color:#9ca2cf;">{{ app.created_at.strftime('%Y-%m-%d %H:%M') if app.created_at else '' }}</span>
+                    </div>
+                    <p><em>연락처:</em> {{ app.contact or '미입력' }}</p>
+                    <p><em>희망 역할:</em> {{ app.desired_role or '미입력' }} · <em>레벨:</em> {{ app.level or '미입력' }}</p>
+                    <p style="color:rgba(255,255,255,0.85); margin:6px 0 0;">메시지: {{ app.message or '없음' }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="color:#9ca2cf; margin-top:10px;">아직 지원자가 없습니다.</p>
+    {% endif %}
+</section>
+{% endblock %}

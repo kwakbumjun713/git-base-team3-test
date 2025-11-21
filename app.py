@@ -21,6 +21,7 @@ def create_app():
 
     # 모델 import (순환참조 방지)
     from models.user import User
+    from models.research import Competition, TeamApplication, TeamPost
 
     # 로그인 사용자 로딩
     @app.before_request
@@ -38,8 +39,8 @@ def create_app():
         resp.headers["Permissions-Policy"] = "geolocation=(), microphone=()"
         resp.headers["Content-Security-Policy"] = (
             "default-src 'self'; "
-            "style-src 'self'; "
-            "script-src 'self'; "
+            "style-src 'self' 'unsafe-inline'; "
+            "script-src 'self' 'unsafe-inline'; "
             "img-src 'self'; "
             "object-src 'none'; "
         )
@@ -48,9 +49,11 @@ def create_app():
     # 블루프린트 등록
     from routes.home import home_bp
     from routes.auth import auth_bp
+    from routes.research import research_bp
 
     app.register_blueprint(home_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(research_bp)
 
     return app
 

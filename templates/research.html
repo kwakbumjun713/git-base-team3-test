@@ -1,0 +1,629 @@
+{% extends "base.html" %}
+
+{% block title %}리서치 허브 · 팀 모집{% endblock %}
+
+{% block head %}
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap');
+
+        :root {
+            color-scheme: dark;
+            --surface: #050513;
+            --panel: rgba(9, 9, 30, 0.88);
+            --border: rgba(255, 255, 255, 0.07);
+            --text: #f4f5ff;
+            --muted: #9ca2cf;
+            --accent: #7d62ff;
+            --accent-2: #4bd4ff;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'Pretendard', 'Segoe UI', sans-serif;
+            color: var(--text);
+            background: radial-gradient(circle at 10% 30%, rgba(53,35,142,0.3), rgba(5,5,15,1) 70%);
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        header {
+            padding: 40px 5vw 10px;
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .hero h1 {
+            margin: 10px 0 12px;
+            font-size: clamp(38px, 4.5vw, 60px);
+        }
+
+        .hero p {
+            margin: 0;
+            max-width: 960px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .hero-actions a {
+            border: 1px solid rgba(160, 170, 255, 0.45);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            color: rgba(255,255,255,0.85);
+            background: rgba(8, 9, 28, 0.6);
+            transition: border-color 0.2s ease, background 0.2s ease;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .hero-actions a.active {
+            border-color: var(--accent);
+            background: linear-gradient(120deg, rgba(125,98,255,0.5), rgba(75,212,255,0.25));
+            color: #fff;
+        }
+
+        .toast {
+            margin-top: 18px;
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(78, 217, 180, 0.4);
+            background: rgba(78, 217, 180, 0.18);
+            color: #c9ffec;
+        }
+
+        .tabs {
+            margin: 32px 5vw 20px;
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid transparent;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .tab.active {
+            border-color: rgba(125,98,255,0.6);
+            color: #fff;
+            background: linear-gradient(130deg, rgba(125,98,255,0.5), rgba(75,212,255,0.25));
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1.9fr 1fr;
+            gap: 30px;
+            padding: 0 5vw 100px;
+        }
+
+        .panel {
+            background: var(--panel);
+            border-radius: 26px;
+            border: 1px solid var(--border);
+            padding: 30px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+        }
+
+        .list-table {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .list-row {
+            display: flex;
+            gap: 24px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.07);
+            background: rgba(255,255,255,0.02);
+            padding: 20px 24px;
+        }
+
+        .list-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .list-header {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .phase-chip {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(5,5,10,0.4);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 999px;
+            padding: 4px 12px;
+            font-size: 13px;
+        }
+
+        .list-comp {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .list-title {
+            font-size: 20px;
+            margin: 0;
+        }
+
+        .list-summary {
+            margin: 0;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.5;
+        }
+
+        .list-meta, .tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .tag-row span {
+            background: rgba(125,98,255,0.12);
+            border-radius: 999px;
+            padding: 2px 10px;
+            color: var(--accent-2);
+        }
+
+        .list-actions {
+            width: 270px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .timeline {
+            padding: 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        details {
+            margin-top: 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 14px;
+            padding: 10px 14px;
+            border: 1px solid rgba(255,255,255,0.07);
+        }
+
+        details summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: #a9bbff;
+        }
+
+        details form {
+            margin-top: 10px;
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.09);
+            background: rgba(255,255,255,0.03);
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        select {
+            appearance: none;
+            background-color: rgba(18, 18, 42, 0.9);
+        }
+
+        select option {
+            background-color: #0f0f2b;
+            color: #f4f5ff;
+        }
+
+        textarea { min-height: 100px; resize: vertical; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 14px;
+            border: none;
+            background: linear-gradient(120deg, var(--accent), var(--accent-2));
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 14px;
+        }
+
+        .match-results {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .random-match {
+            margin-top: 14px;
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .inline-match-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .match-card {
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .match-result-card {
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+            margin-bottom: 8px;
+        }
+
+        .match-card strong {
+            font-size: 15px;
+        }
+
+        .empty {
+            padding: 30px;
+            text-align: center;
+            color: var(--muted);
+            border: 1px dashed rgba(255,255,255,0.1);
+            border-radius: 16px;
+        }
+
+        @media (max-width: 1020px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+            .list-row {
+                flex-direction: column;
+            }
+            .list-actions {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <header>
+        <div class="hero">
+            <div>
+                <small style="letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,.6);">Research Team Hub</small>
+                <h1>대회 · 프로젝트 팀 모집</h1>
+                <p>
+                    승인된 대회/프로젝트 카탈로그에서 참가하고 싶은 트랙을 선택하고 팀원을 모집하세요.
+                    팀 랜덤 매칭은 대회와 레벨을 지정해 즉시 3개의 팀 제안을 보여주며,
+                    지원 폼을 통해 개인이 원하는 팀에 직접 합류 신청을 남길 수 있습니다.
+                </p>
+            </div>
+            <div class="hero-actions">
+                <a href="{{ url_for('research.catalog') }}">대회 카탈로그</a>
+                <a class="active" href="{{ url_for('research.research') }}">팀 모집</a>
+            </div>
+        </div>
+        {% if messages %}
+            <div class="toast">{{ messages[-1] }}</div>
+        {% endif %}
+    </header>
+
+    <div class="tabs">
+        {% for phase in phases %}
+            <a class="tab {% if phase == active_phase %}active{% endif %}" href="{{ url_for('research.research', phase=phase) }}">
+                {{ phase }} · {{ phase_counts.get(phase, 0) }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <div class="layout">
+        <section class="panel">
+            <h2>모집 목록</h2>
+            <p style="color: var(--muted); margin-top: -8px;">
+                모든 모집글을 리스트로 한눈에 확인하세요. 팀 현황과 요구 스택을 빠르게 파악할 수 있습니다.
+            </p>
+
+            {% if posts %}
+                <div class="list-table">
+                    {% for post in posts %}
+                        <article class="list-row" id="team-{{ post.id }}" data-post-id="{{ post.id }}">
+                            <div class="list-main">
+                                <div class="list-header">
+                                    <span class="phase-chip">{{ post.phase }}</span>
+                                    <span class="list-comp">{{ post.competition_title or '독립 프로젝트' }}</span>
+                                    <span class="list-comp">지원자 {{ post.applicant_count }}명</span>
+                                </div>
+                                <h3 class="list-title">{{ post.title }}</h3>
+                                <p class="list-summary">{{ post.summary or '소개가 없습니다.' }}</p>
+                                <div class="list-meta">
+                                    <span>팀장 {{ post.owner or '비공개' }}</span>
+                                    {% if post.team_size %}<span>팀 규모 {{ post.team_size }}</span>{% endif %}
+                                    {% if post.level %}<span>난이도 {{ post.level }}</span>{% endif %}
+                                    {% if post.use_random_matching %}<span>랜덤 매칭 허용</span>{% endif %}
+                                </div>
+                                {% if post.tags %}
+                                    <div class="tag-row">
+                                        {% for tag in post.tags %}
+                                            <span>#{{ tag }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% if post.has_applied %}
+                                    <div style="font-size:13px; color:#7dd0ff;">✅ 이미 지원 완료</div>
+                                {% endif %}
+                                <p style="font-size: 13px; color: var(--muted); margin-top: 4px;">요구사항: {{ post.requirements or '상세 논의' }}</p>
+                            </div>
+                            <div class="list-actions">
+                                <div class="timeline">
+                                    <div>신청: {{ post.apply_period }} <span style="color:#c0d3ff;">{{ post.apply_badge }}</span></div>
+                                    <div>대회: {{ post.event_period }} <span style="color:#c0d3ff;">{{ post.event_badge }}</span></div>
+                                </div>
+                                <a href="{{ url_for('research.team_detail', post_id=post.id) }}" class="submit-btn" style="text-align:center;">팀 페이지</a>
+
+                                <div class="random-match">
+                                    <div style="font-weight:600; margin-bottom:6px;">비슷한 팀 랜덤 추천</div>
+                                    <form class="inline-match-form" data-comp="{{ post.competition_title }}">
+                                        <select name="level" style="flex:1; min-width:120px;">
+                                            <option value="">전체 레벨</option>
+                                            {% for level in levels %}
+                                                <option value="{{ level }}">{{ level }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" class="submit-btn" style="margin-top:0; padding:8px 12px;">추천</button>
+                                    </form>
+                                    <div class="match-results" data-state="empty" style="margin-top:10px;">추천 대기 중</div>
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty">해당 상태의 팀 모집 글이 없습니다. 새로운 글을 등록해보세요.</div>
+            {% endif %}
+        </section>
+
+        <aside class="panel" style="display: flex; flex-direction: column; gap: 30px;">
+            <div>
+                <h2>팀 모집 작성</h2>
+                <p style="color: var(--muted); margin-top: -6px;">이미지 URL을 첨부하면 카드 상단 배경으로 노출됩니다.</p>
+                <form method="POST">
+                    <input type="hidden" name="form_type" value="team_post">
+                    <label>연결할 대회/프로젝트</label>
+                    <input type="text" name="competition_input" list="competition-options"
+                           placeholder="직접 입력하거나 아래 목록에서 선택하세요."
+                           value="{{ prefill.competition }}">
+                    <datalist id="competition-options">
+                        {% for comp in competitions %}
+                            <option value="{{ comp.title }}"></option>
+                        {% endfor %}
+                    </datalist>
+                    <small style="color: var(--muted); display: block; margin-top: 6px;">
+                        자유롭게 입력해도 되고, 기존 카탈로그 제목과 일치하면 자동으로 연결됩니다.
+                    </small>
+
+                    <label style="margin-top: 10px;">팀명 / 프로젝트명</label>
+                    <input type="text" name="title" required value="{{ prefill.title }}">
+
+                    <label>팀장 / 호스트</label>
+                    <input type="text" name="owner" placeholder="예) 팀 Nebula">
+
+                    <div class="form-grid">
+                        <div>
+                            <label>대회 시작</label>
+                            <input type="datetime-local" name="event_start" value="{{ prefill.event_start }}">
+                        </div>
+                        <div>
+                            <label>대회 종료</label>
+                            <input type="datetime-local" name="event_end" value="{{ prefill.event_end }}">
+                        </div>
+                    </div>
+
+                    <label>한줄 소개</label>
+                    <textarea name="summary" placeholder="팀 소개 및 방향성">{{ prefill.summary }}</textarea>
+
+                    <label>필요 역할 / 운영 방식</label>
+                    <textarea name="requirements" placeholder="예) 프론트 1, AI 1, 주말 저녁 스크림">{{ prefill.requirements }}</textarea>
+
+                    <div class="form-grid">
+                        <div>
+                            <label>팀 규모</label>
+                            <input type="text" name="team_size" placeholder="예) 4명 / 현재 2명" value="{{ prefill.team_size }}">
+                        </div>
+                        <div>
+                            <label>레벨</label>
+                            <select name="level">
+                                <option value="" {% if not prefill.level %}selected{% endif %}>선택</option>
+                                {% for level in levels %}
+                                    <option value="{{ level }}" {% if prefill.level == level %}selected{% endif %}>{{ level }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div>
+                            <label>진행 상태</label>
+                            <select name="phase">
+                                <option value="모집 중">모집 중</option>
+                                <option value="진행중">진행중</option>
+                                <option value="완료">완료</option>
+                            </select>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px; margin-top: 24px;">
+                            <input type="checkbox" id="use_random" name="use_random_matching" checked style="width:auto;">
+                            <label for="use_random" style="margin:0;">랜덤 매칭 허용</label>
+                        </div>
+                    </div>
+
+                    <label>태그</label>
+                    <input type="text" name="tags" placeholder="예) 웹, AI, 인프라">
+
+                    <button type="submit" class="submit-btn">모집 글 등록</button>
+                </form>
+            </div>
+
+            <div>
+                <h2>랜덤 매칭 랩</h2>
+                <p style="color: var(--muted); margin-top: -6px;">대회와 레벨을 선택하면 조건에 맞는 팀을 랜덤으로 추천합니다.</p>
+                <form id="matchForm">
+                    <label>대회 선택</label>
+                    <select name="competition_id">
+                        <option value="">전체</option>
+                        {% for comp in competitions %}
+                            <option value="{{ comp.id }}">{{ comp.title }}</option>
+                        {% endfor %}
+                    </select>
+                    <label>레벨</label>
+                    <select name="level">
+                        <option value="">전체</option>
+                        {% for level in levels %}
+                            <option value="{{ level }}">{{ level }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="submit-btn" style="margin-top: 12px;">랜덤 매칭 실행</button>
+                </form>
+                <div id="matchResults" class="match-results">
+                    <div class="empty">조건을 선택하고 매칭을 실행해주세요.</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+<script>
+        const matchForm = document.getElementById('matchForm');
+        const matchResults = document.getElementById('matchResults');
+        const teamDetailBase = "{{ url_for('research.team_detail', post_id=0)[:-1] }}";
+
+        matchForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(matchForm);
+            const payload = {
+                competition_id: formData.get('competition_id'),
+                level: formData.get('level')
+            };
+
+            matchResults.innerHTML = '<div class="empty">추천 중...</div>';
+
+            try {
+                const response = await fetch('{{ url_for("research.api_random_match") }}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                if (!data.matches || data.matches.length === 0) {
+                    matchResults.innerHTML = '<div class="empty">조건에 맞는 팀이 없습니다.</div>';
+                    return;
+                }
+                matchResults.innerHTML = data.matches.map(match => `
+                    <div class="match-card">
+                        <strong>${match.title}</strong>
+                        <p style="margin: 4px 0 0; color: var(--muted);">${match.competition_title || '독립 프로젝트'}</p>
+                        <p style="margin: 4px 0; font-size: 13px;">팀장: ${match.owner || '비공개'} · ${match.team_size || ''}</p>
+                        <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.8);">${match.summary}</p>
+                        <button class="submit-btn" data-focus-id="${match.id}" style="margin-top:10px;">팀 페이지로 이동</button>
+                    </div>
+                `).join('');
+                bindResultButtons(matchResults);
+            } catch (error) {
+                matchResults.innerHTML = '<div class="empty">매칭 중 오류가 발생했습니다.</div>';
+            }
+        });
+
+    document.querySelectorAll('.inline-match-form').forEach(form => {
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const container = form.closest('.random-match');
+            const resultBox = container.querySelector('.match-results');
+            resultBox.textContent = '추천 중...';
+
+            try {
+                const response = await fetch('{{ url_for("research.api_random_match") }}', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        competition_title: form.dataset.comp,
+                        level: form.querySelector('select').value || null
+                    })
+                });
+                const data = await response.json();
+                if (!data.matches || data.matches.length === 0) {
+                    resultBox.textContent = '조건에 맞는 팀이 없습니다.';
+                    return;
+                }
+                resultBox.innerHTML = data.matches.map(match => `
+                    <div class="match-result-card">
+                        <strong>${match.title}</strong>
+                        <div style="color:#9ca2cf; font-size:13px;">레벨: ${match.level || '정보 없음'} · ${match.team_size || '규모 미확인'}</div>
+                        <div style="font-size:13px; color:rgba(255,255,255,0.8); margin-top:4px;">${match.summary || '요약 없음'}</div>
+                        <button class="submit-btn" data-focus-id="${match.id}" style="margin-top:8px;">팀 페이지로 이동</button>
+                    </div>
+                `).join('');
+                bindResultButtons(resultBox);
+            } catch (err) {
+                resultBox.textContent = '추천 중 오류가 발생했습니다.';
+            }
+        });
+    });
+
+    function bindResultButtons(container) {
+        container.querySelectorAll('button[data-focus-id]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const postId = btn.dataset.focusId;
+                window.location.href = teamDetailBase + postId;
+            });
+        });
+    }
+</script>
+{% endblock %}
