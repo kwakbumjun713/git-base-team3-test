@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.log
+*.db
+.env
+.env.*
+.venv/
+.git/
+.gitignore
+.mypy_cache/
+.pytest_cache/
+static/uploads/
+static/wargame_attachments/
