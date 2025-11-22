@@ -9,16 +9,14 @@
 ## 빠른 시작 (Docker)
 1. 환경파일 준비
    ```bash
-   cp .env.example .env
-   # SECRET_KEY, DB_PASSWORD, DB_ROOT_PASSWORD를 원하는 값으로 수정
+   .env
+   # SECRET_KEY, DB_PASSWORD, DB_ROOT_PASSWORD를 원하는 값으로 입력
    ```
 2. 빌드 & 실행
    ```bash
    docker compose up -d --build
    ```
 3. 접속: http://localhost:5000
-
-> SQLite로 가볍게 띄우려면 `.env`에서 `DB_ENGINE=sqlite`로 바꾸고 `docker compose up web`만 실행.
 
 ## 환경변수 (.env)
 - `SECRET_KEY` : 긴 랜덤 문자열 (세션/CSRF 키)
