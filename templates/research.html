@@ -438,6 +438,7 @@
                 <h2>팀 모집 작성</h2>
                 <p style="color: var(--muted); margin-top: -6px;">이미지 URL을 첨부하면 카드 상단 배경으로 노출됩니다.</p>
                 <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="form_type" value="team_post">
                     <label>연결할 대회/프로젝트</label>
                     <input type="text" name="competition_input" list="competition-options"
@@ -541,6 +542,7 @@
     </div>
 
 <script>
+        const csrfToken = "{{ csrf_token() }}";
         const matchForm = document.getElementById('matchForm');
         const matchResults = document.getElementById('matchResults');
         const teamDetailBase = "{{ url_for('research.team_detail', post_id=0)[:-1] }}";
@@ -558,7 +560,10 @@
             try {
                 const response = await fetch('{{ url_for("research.api_random_match") }}', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
                     body: JSON.stringify(payload)
                 });
                 const data = await response.json();
@@ -591,7 +596,10 @@
             try {
                 const response = await fetch('{{ url_for("research.api_random_match") }}', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
                     body: JSON.stringify({
                         competition_title: form.dataset.comp,
                         level: form.querySelector('select').value || null

@@ -279,7 +279,6 @@ def _ensure_team_post_columns():
 # Routes
 # ---------------------------------------------------------------------------
 @research_bp.route("/research", methods=["GET", "POST"])
-@csrf.exempt
 def research():
     if not g.user:
         return redirect(url_for("auth.login"))
@@ -477,7 +476,6 @@ def _handle_team_application_submission(selected_phase):
 
 
 @research_bp.route("/api/random-match", methods=["POST"])
-@csrf.exempt
 @limiter.limit("20 per minute")
 def api_random_match():
     payload = request.get_json(silent=True) or request.form or {}

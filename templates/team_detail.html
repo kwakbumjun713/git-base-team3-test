@@ -92,6 +92,7 @@
     {% else %}
         <p style="color:#9ca2cf;">아직 지원하지 않았습니다. 아래 양식을 작성하면 팀 리더에게 전달됩니다.</p>
         <form method="POST" action="{{ url_for('research.research', phase=post.phase) }}" class="inline-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <input type="hidden" name="form_type" value="team_application">
             <input type="hidden" name="post_id" value="{{ post.id }}">
             <input type="hidden" name="next" value="{{ url_for('research.team_detail', post_id=post.id) }}">
