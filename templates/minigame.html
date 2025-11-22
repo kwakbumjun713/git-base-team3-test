@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Tetris Minigame - HSpace{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/minigame.css') }}">
+<meta name="csrf-token" content="{{ csrf_token() }}">
+{% endblock %}
+
+{% block content %}
+<div class="minigame-container">
+    <h1 class="page-title">Tetris Minigame</h1>
+    <p class="page-subtitle">Stack blocks to earn points and challenge the leaderboard!</p>
+
+    <div class="game-layout">
+        <!-- Tetris Game Area -->
+        <div class="tetris-wrapper">
+            <div class="tetris-game">
+                <!-- Game Over Popup -->
+                <div class="popup">
+                    Game Over
+                    <button class="restart">Restart</button>
+                </div>
+
+                <!-- Speed/Level Display -->
+                <div class="level_container">
+                    <p>SPEED</p>
+                    <div class="level"></div>
+                </div>
+
+                <!-- Game Board -->
+                <div class="board">
+                    <div class="header">
+                        <p>score</p>
+                        <p class="score">0</p>
+                    </div>
+                    <table class="stage_container">
+                        <tbody class="stage"></tbody>
+                    </table>
+                </div>
+
+                <!-- Next Block Preview -->
+                <div class="next"></div>
+            </div>
+
+            <!-- Game Controls -->
+            <div class="game-instructions">
+                <h3>Controls</h3>
+                <ul>
+                    <li><kbd>&#8592;</kbd> <kbd>&#8594;</kbd> Move Left/Right</li>
+                    <li><kbd>&#8595;</kbd> Fast Drop</li>
+                    <li><kbd>&#8593;</kbd> Rotate Block</li>
+                    <li><kbd>Space</kbd> Instant Drop</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Leaderboard Area -->
+        <div class="leaderboard-wrapper">
+            <div class="leaderboard-box">
+                <h2 class="leaderboard-title">Leaderboard</h2>
+
+                {% if leaderboard %}
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Score</th>
+                            <th>Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in leaderboard %}
+                        <tr>
+                            <td>
+                                {% if loop.index == 1 %}
+                                    <span class="rank-medal">&#127941;</span>
+                                {% elif loop.index == 2 %}
+                                    <span class="rank-medal">&#129352;</span>
+                                {% elif loop.index == 3 %}
+                                    <span class="rank-medal">&#129353;</span>
+                                {% else %}
+                                    <span class="rank-number">{{ loop.index }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ entry.user.username }}</td>
+                            <td class="score-highlight">{{ entry.score }}</td>
+                            <td>{{ entry.level }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="no-scores">No scores yet.<br>Be the first to play!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tetris Game Script -->
+<script type="module" src="{{ url_for('static', filename='js/tetris/main.js') }}"></script>
+{% endblock %}

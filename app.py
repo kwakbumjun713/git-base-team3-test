@@ -23,6 +23,7 @@ def create_app():
     from models.user import User
     from models.research import Competition, TeamApplication, TeamPost
     from models.wargame import WargameAttempt, WargameChallenge
+    from models.minigame import TetrisScore
 
     # 로그인 사용자 로딩
     @app.before_request
@@ -52,11 +53,13 @@ def create_app():
     from routes.auth import auth_bp
     from routes.research import research_bp
     from routes.wargame import wargame_bp
+    from routes.minigame import minigame_bp
 
     app.register_blueprint(home_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(research_bp)
     app.register_blueprint(wargame_bp)
+    app.register_blueprint(minigame_bp)
 
     return app
 
