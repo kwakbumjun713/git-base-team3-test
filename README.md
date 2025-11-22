@@ -7,26 +7,22 @@
 - 열린 포트: 웹 5000, MySQL 기본 3306 (이미 사용 중이면 Compose에서 포트만 조정)
 
 ## 빠른 시작 (Docker)
-1. 환경파일 준비
-   ```bash
-   .env
-   # SECRET_KEY, DB_PASSWORD, DB_ROOT_PASSWORD를 원하는 값으로 입력
+1. 환경변수 파일 (.env) 준비
+   ```.env
+    SECRET_KEY=랜덤 키
+    DB_ENGINE=mysql
+    DB_HOST="localhost"
+    DB_PORT="3306"
+    DB_USER=db에 생성할 유저 이름
+    DB_PASSWORD=db에 생성할 유저 패스워드
+    DB_ROOT_PASSWORD=루트 비번
+    DB_NAME=생성할 스키마 이름
    ```
 2. 빌드 & 실행
    ```bash
    docker compose up -d --build
    ```
 3. 접속: http://localhost:5000
-
-## 환경변수 (.env)
-- `SECRET_KEY` : 긴 랜덤 문자열 (세션/CSRF 키)
-- `DB_ENGINE` : `mysql`(기본) 또는 `sqlite`
-- `DB_HOST` : MySQL 컨테이너 이름 `db`
-- `DB_PORT` : 3306 (컨테이너 내부용, 호스트 포트는 Compose `ports`에서 조정)
-- `DB_USER` / `DB_PASSWORD` : 일반 계정
-- `DB_NAME` : 생성할 DB 이름
-- `DB_ROOT_PASSWORD` : 루트 계정 비밀번호
-- `MAX_CONTENT_LENGTH` : 업로드 최대 크기(바이트)
 
 ## 관리 명령어
 - 상태 확인: `docker compose ps`
