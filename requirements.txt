@@ -7,3 +7,4 @@ PyMySQL
 cryptography
 requests
 python-dotenv
+gunicorn
